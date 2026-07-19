@@ -298,6 +298,46 @@ req_rpm:: 24.39  current_rpm:: 24.41  pwm:: 142
 
 ---
 
+### `plot_motors.py` — วิเคราะห์ PID Step Response
+
+Script Python สำหรับดูกราฟ PID response ของมอเตอร์ทั้ง 4 พร้อมกัน พร้อมคำนวณ metrics อัตโนมัติ
+
+**ติดตั้ง dependencies (ครั้งแรกครั้งเดียว):**
+```bash
+pip install pyserial numpy matplotlib
+```
+
+**วิธีใช้งาน:**
+
+แบบที่ 1 — เชื่อมต่อ serial อัตโนมัติ (upload test firmware ก่อน):
+```bash
+cd test
+python3 plot_motors.py
+```
+Script จะส่งคำสั่ง `testall` ให้บอร์ดเองและเก็บข้อมูลอัตโนมัติ
+
+แบบที่ 2 — อ่านจากไฟล์ที่บันทึกไว้:
+```bash
+python3 plot_motors.py motor_log.txt
+```
+
+**ผลลัพธ์ที่ได้:**
+- กราฟ RPM step response ของ Motor 1–4 แยกกัน
+- คำนวณ metrics ทุก motor:
+  - **Rise Time** — เวลาที่ RPM ไต่จาก 10% → 90% ของ target
+  - **Peak Time** — เวลาที่ RPM ถึงจุดสูงสุด
+  - **Settling Time** — เวลาที่ RPM เข้าสู่ช่วง ±5% ของ target
+  - **Overshoot** — % ที่ RPM เกิน target
+  - **Steady State Error** — % ความคลาดเคลื่อนตอนนิ่ง
+
+ใช้ผลนี้ตัดสินใจปรับค่า PID ใน `config/luna_robot.h`
+
+**ตัวอย่างกราฟ:**
+
+![PID Response](docs/images/pid_response.png)
+
+---
+
 ### คำสั่ง `imu` — ทดสอบ IMU
 
 ```
