@@ -1,0 +1,20 @@
+jrowberg/I2Cdevlib-MPU6050
+jrowberg/I2Cdevlib-ITG3200
+https://github.com/wollewald/INA219_WE
+SPI
+jrowberg/I2Cdevlib-HMC5883L
+jrowberg/I2Cdevlib-ADXL345
+madhephaestus/ESP32Encoder @ ^0.10.1
+madhephaestus/ESP32Servo@^0.13.0
+jrowberg/I2Cdevlib-HMC5843
+https://github.com/micro-ROS/micro_ros_platformio
+wollewald/INA219_WE
+adafruit/Adafruit INA219@^1.2.0
+jrowberg/I2Cdevlib-Core
+fastled/FastLED
+jrowberg/I2Cdevlib-AK8975
+adafruit/Adafruit BusIO
+https://github.com/dthain/QMC5883L
+adafruit/Adafruit PWM Servo Driver Library
+https://github.com/arcao/Syslog
+mcauser/i2cdetect

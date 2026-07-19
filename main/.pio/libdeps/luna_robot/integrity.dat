@@ -1,0 +1,4 @@
+madhephaestus/ESP32Encoder @ ^0.10.1
+jrowberg/I2Cdevlib-Core
+https://github.com/micro-ROS/micro_ros_platformio
+madhephaestus/ESP32Servo@^0.13.0
