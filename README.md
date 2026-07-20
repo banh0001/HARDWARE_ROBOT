@@ -4,6 +4,10 @@ Firmware สำหรับ LUNA Mecanum Robot รันบน ESP32-S3 ใช�
 
 ![LUNA Robot](docs/images/LUNA_ROBOT.png)
 
+### System Overview
+
+![System Overview](docs/images/overviewcon.png)
+
 ---
 
 ## โครงสร้างโปรเจกต์
@@ -84,6 +88,10 @@ cd luna_mecanum_robot_hardware
 ## 3. ตั้งค่าหุ่นยนต์ (`config/luna_robot.h`)
 
 ไฟล์นี้คือหัวใจของ config ทั้งหมด แก้ค่าให้ตรงกับฮาร์ดแวร์ก่อนอัพโหลด
+
+**การเชื่อมต่อฮาร์ดแวร์ทั้งหมด:**
+
+![Hardware Connections](docs/images/hardwarecontenct.png)
 
 **บอร์ด LUNA:**
 
@@ -377,6 +385,10 @@ python3 plot_motors.py motor_log.txt
 **ตัวอย่างกราฟ:**
 
 ![PID Response](docs/images/pid_response.png)
+
+**ผลตอบสนอง PID ที่ดีที่สุด (Control Performance):**
+
+![Best PID Response](docs/images/goodpidresponse.png)
 
 ---
 
