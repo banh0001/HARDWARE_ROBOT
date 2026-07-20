@@ -108,6 +108,8 @@ Kinematics kinematics(
 Odometry odometry;
 IMU imu;
 
+// ── Phase 1: Entry point ──────────────────────────────────────────────────────
+
 void setup()
 {
     Serial.begin(BAUDRATE);
@@ -128,6 +130,8 @@ void setup()
     prev_odom_update = millis();
     prev_cmd_time    = millis();
 }
+
+// ── Phase 2: Main loop — micro-ROS state machine ──────────────────────────────
 
 void loop()
 {
@@ -155,21 +159,7 @@ void loop()
     }
 }
 
-void controlCallback(rcl_timer_t * timer, int64_t last_call_time)
-{
-    RCLC_UNUSED(last_call_time);
-    if (timer != NULL)
-    {
-        moveBase();
-        publishData();
-    }
-}
-
-void twistCallback(const void * msgin)
-{
-    digitalWrite(LED_PIN, !digitalRead(LED_PIN));
-    prev_cmd_time = millis();
-}
+// ── Phase 2a: State machine helpers ──────────────────────────────────────────
 
 bool createEntities()
 {
@@ -213,6 +203,28 @@ bool createEntities()
     return true;
 }
 
+bool syncTime()
+{
+    const int timeout_ms = 1000;
+    if (rmw_uros_epoch_synchronized()) return true;
+    if (RMW_RET_OK != rmw_uros_sync_session(timeout_ms)) return false;
+    if (rmw_uros_epoch_synchronized())
+    {
+#if (_POSIX_TIMERS > 0)
+        int64_t time_ns = rmw_uros_epoch_nanos();
+        timespec tp;
+        tp.tv_sec  = time_ns / 1000000000LL;
+        tp.tv_nsec = time_ns % 1000000000LL;
+        clock_settime(CLOCK_REALTIME, &tp);
+#else
+        unsigned long long ros_time_ms = rmw_uros_epoch_millis();
+        time_offset = ros_time_ms - millis();
+#endif
+        return true;
+    }
+    return false;
+}
+
 bool destroyEntities()
 {
     rmw_context_t * rmw_context = rcl_context_get_rmw_context(&support.context);
@@ -239,6 +251,30 @@ void fullStop()
     motor3_controller.brake();
     motor4_controller.brake();
 }
+
+// ── Phase 3: Executor callbacks ───────────────────────────────────────────────
+
+// Called by timer every CONTROL_TIMER ms (50 Hz).
+// moveBase() must run before publishData() — publish reads RPM updated by moveBase.
+void controlCallback(rcl_timer_t * timer, int64_t last_call_time)
+{
+    RCLC_UNUSED(last_call_time);
+    if (timer != NULL)
+    {
+        moveBase();
+        publishData();
+    }
+}
+
+// Called on every new /cmd_vel message (ON_NEW_DATA).
+// twist_msg is already filled by the executor before this fires.
+void twistCallback(const void * msgin)
+{
+    digitalWrite(LED_PIN, !digitalRead(LED_PIN));
+    prev_cmd_time = millis();
+}
+
+// ── Phase 4: Per-cycle control logic (called every 20 ms) ────────────────────
 
 void moveBase()
 {
@@ -320,28 +356,6 @@ void publishData()
     RCSOFTCHECK(rcl_publish(&rpm_publisher,  &rpm_msg,  NULL));
 }
 
-bool syncTime()
-{
-    const int timeout_ms = 1000;
-    if (rmw_uros_epoch_synchronized()) return true;
-    if (RMW_RET_OK != rmw_uros_sync_session(timeout_ms)) return false;
-    if (rmw_uros_epoch_synchronized())
-    {
-#if (_POSIX_TIMERS > 0)
-        int64_t time_ns = rmw_uros_epoch_nanos();
-        timespec tp;
-        tp.tv_sec  = time_ns / 1000000000LL;
-        tp.tv_nsec = time_ns % 1000000000LL;
-        clock_settime(CLOCK_REALTIME, &tp);
-#else
-        unsigned long long ros_time_ms = rmw_uros_epoch_millis();
-        time_offset = ros_time_ms - millis();
-#endif
-        return true;
-    }
-    return false;
-}
-
 struct timespec getTime()
 {
     struct timespec tp = {0};
@@ -355,10 +369,7 @@ struct timespec getTime()
     return tp;
 }
 
-void rclErrorLoop()
-{
-    while (true) { flashLED(2); }
-}
+// ── Utilities ─────────────────────────────────────────────────────────────────
 
 void flashLED(int n_times)
 {
@@ -368,4 +379,9 @@ void flashLED(int n_times)
         digitalWrite(LED_PIN, LOW);  delay(150);
     }
     delay(1000);
+}
+
+void rclErrorLoop()
+{
+    while (true) { flashLED(2); }
 }
