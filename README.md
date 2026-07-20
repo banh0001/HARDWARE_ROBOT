@@ -136,6 +136,48 @@ cd luna_mecanum_robot_hardware
 
 Firmware สำหรับใช้งานจริงกับ ROS 2 ผ่าน micro-ROS
 
+### Firmware Flowchart
+
+```mermaid
+flowchart TD
+    START([START]) --> SETUP["SETUP\nSerial.begin 921600\npinMode LED OUTPUT\nWire.begin SDA/SCL"]
+    SETUP --> IMU{imu.init OK?}
+    IMU -->|No| FLASH["flashLED(3) loop"]
+    FLASH --> END_STATE([END])
+    IMU -->|Yes| TRANSPORT["set_microros_serial_transport\n/dev/ttyACM0"]
+    TRANSPORT --> BUFTIMER["buffer + timer init"]
+    BUFTIMER --> PING1{PING agent\nevery 500 ms}
+    PING1 -->|No| WAIT1["WAITING_AGENT"]
+    WAIT1 --> PING1
+    PING1 -->|Yes| CREATEENT[["CreateEntities()\nnode / topic / timer 20ms"]]
+    CREATEENT --> CREATEOK{CreateEntities\nOK?}
+    CREATEOK -->|No| DESTROY1[["destroyEntities"]]
+    DESTROY1 --> WAIT1
+    CREATEOK -->|Yes| PING2{ping_Agent\nevery 200 ms}
+    PING2 -->|No| FULLSTOP["fullStop + destroyEntities"]
+    FULLSTOP --> WAIT1
+    PING2 -->|Yes| EXEC[["rclc_executor_spin_some\nCONTROL_TIMER 20ms"]]
+    EXEC --> MB[["moveBase"]]
+    EXEC --> PD[["publishData"]]
+    MB --> CMDTO{cmd_timeout\n> 200 ms?}
+    CMDTO -->|No| ZEROV["linear.x/y = 0\nangular.z = 0"]
+    CMDTO -->|Yes| GETRPM["kinematics.getRPM\nlinear.x/y, angular.z"]
+    ZEROV --> GETRPM
+    GETRPM --> ENCRPM["encoder.getRPM"]
+    ENCRPM --> CMDZERO{cmd_vel == 0?}
+    CMDZERO -->|Yes| PIDM["PID motor\nPWM / readRPM"]
+    CMDZERO -->|No| BRAKEM["motor.brake"]
+    PIDM --> GETVEL["getVelocities\ncurrent_rpm 1–4"]
+    BRAKEM --> GETVEL
+    GETVEL --> ODOUP["odometry_update\ndt, vx, vy, az"]
+    PD --> MSGS["odom_msg + imu_msg"]
+    MSGS --> QUAT["compute quaternion\nx, y, z, w"]
+    QUAT --> GETT[["getTime"]]
+    GETT --> STAMP["stamp header.stamp = time_stamp"]
+    STAMP --> RPMDATA["rpm_data[0–3] = rpm[1–4]"]
+    RPMDATA --> PUB[("publish\n/imu/data\n/odom_unfiltered\n/motor/rpm")]
+```
+
 ### Build และ Upload
 
 **ใน VS Code:**
