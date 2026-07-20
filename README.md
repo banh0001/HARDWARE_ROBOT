@@ -276,19 +276,31 @@ Press enter to clear command.
 - **นำค่า COUNTS PER REVOLUTION ที่ได้ไปอัพเดทใน `config/luna_robot.h`**
 
 ตัวอย่าง output ของ LUNA:
-```
-================MOTOR ENCODER READINGS================
-FRONT LEFT - M1: 12310  FRONT RIGHT - M2: 10568
-REAR LEFT  - M3: 11440  REAR RIGHT  - M4: 10700
 
-================COUNTS PER REVOLUTION=================
-FRONT LEFT - M1: 2443   FRONT RIGHT - M2: 2102
-REAR LEFT  - M3: 2276   REAR RIGHT  - M4: 2139
+**Encoder Readings**
 
-====================MAX VELOCITIES====================
-Linear Velocity:  +- 0.16 m/s
-Angular Velocity: +- 1.65 rad/s
-```
+| Motor | Position | Ticks |
+|---|---|---|
+| M1 | Front Left  | 12310 |
+| M2 | Front Right | 10568 |
+| M3 | Rear Left   | 11440 |
+| M4 | Rear Right  | 10700 |
+
+**Counts Per Revolution**
+
+| Motor | Position | CPR |
+|---|---|---|
+| M1 | Front Left  | 2443 |
+| M2 | Front Right | 2102 |
+| M3 | Rear Left   | 2276 |
+| M4 | Rear Right  | 2139 |
+
+**Max Velocities**
+
+| | Value |
+|---|---|
+| Linear  | ± 0.16 m/s   |
+| Angular | ± 1.65 rad/s |
 
 ---
 
@@ -386,7 +398,7 @@ python3 plot_motors.py motor_log.txt
 
 ![PID Response](docs/images/pid_response.png)
 
-**ผลตอบสนอง PID ที่ดีที่สุด (Control Performance):**
+**ผลตอบสนองตาม(Control Performance):**
 
 ![Best PID Response](docs/images/goodpidresponse.png)
 
