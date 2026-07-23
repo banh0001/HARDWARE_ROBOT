@@ -1,3 +1,9 @@
+// Copyright (c) 2026 Apiluck Noppkun. All rights reserved.
+// This source code is provided for personal use only.
+// Redistribution, resale, or commercial use without written
+// permission from the author is strictly prohibited.
+// Contact: apiluck.banh@gmail.com
+
 #ifndef LUNA_ROBOT_H
 #define LUNA_ROBOT_H
 #define LUNA_ROBOT
@@ -7,38 +13,32 @@
 #define IMU_MPU6050
 #define SDA_PIN 2
 #define SCL_PIN 1
-/*
-ROBOT ORIENTATION MECANUM
-         FRONT
-    MOTOR1  MOTOR2
-    MOTOR3  MOTOR4
-         BACK
-*/
+
 #define K_P1 0.01
-#define K_I1 1.0
-#define K_D1 0
+#define K_I1 0.8
+#define K_D1 0.2
 
 #define K_P2 0.01
-#define K_I2 1.1
-#define K_D2 0
+#define K_I2 0.9
+#define K_D2 0.2
 
 #define K_P3 0.01
-#define K_I3 1.1
-#define K_D3 0
+#define K_I3 0.9
+#define K_D3 0.2
 
 #define K_P4 0.01
-#define K_I4 1.1
-#define K_D4 0
+#define K_I4 0.9
+#define K_D4 0.2
 
 #define MOTOR_MAX_RPM 60
 #define MAX_RPM_RATIO 0.8
 #define MOTOR_OPERATING_VOLTAGE 6
 #define MOTOR_POWER_MAX_VOLTAGE 12
 #define MOTOR_POWER_MEASURED_VOLTAGE 12
-#define COUNTS_PER_REV1 2250 //1200
-#define COUNTS_PER_REV2 2102 //107
-#define COUNTS_PER_REV3 2276 //1188
-#define COUNTS_PER_REV4 2139 //1134
+#define COUNTS_PER_REV1 2713//2250 //1200
+#define COUNTS_PER_REV2 2270//2102 //1070
+#define COUNTS_PER_REV3 2460//2276 //1188
+#define COUNTS_PER_REV4 2341//2139 //1134
 #define WHEEL_DIAMETER 0.065
 #define LR_WHEELS_DISTANCE 0.1975
 #define PWM_BITS 8

@@ -1,3 +1,9 @@
+// Copyright (c) 2026 Apiluck Noppkun. All rights reserved.
+// This source code is provided for personal use only.
+// Redistribution, resale, or commercial use without written
+// permission from the author is strictly prohibited.
+// Contact: apiluck.banh@gmail.com
+
 // Copyright (c) 2021 Juan Miguel Jimeno
 //
 // Licensed under the Apache License, Version 2.0 (the "License");

@@ -1,3 +1,9 @@
+// Copyright (c) 2026 Apiluck Noppkun. All rights reserved.
+// This source code is provided for personal use only.
+// Redistribution, resale, or commercial use without written
+// permission from the author is strictly prohibited.
+// Contact: apiluck.banh@gmail.com
+
 // I2Cdev library collection - MPU6050 I2C device class
 // Based on InvenSense MPU-6050 register map document rev. 2.0, 5/19/2011 (RM-MPU-6000A-00)
 // 8/24/2011 by Jeff Rowberg <jeff@rowberg.net>

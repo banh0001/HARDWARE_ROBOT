@@ -1,3 +1,9 @@
+// Copyright (c) 2026 Apiluck Noppkun. All rights reserved.
+// This source code is provided for personal use only.
+// Redistribution, resale, or commercial use without written
+// permission from the author is strictly prohibited.
+// Contact: apiluck.banh@gmail.com
+
 // I2C device class (I2Cdev) demonstration Arduino sketch for MPU9150 class, 3D math helper
 // 6/5/2012 by Jeff Rowberg <jeff@rowberg.net>
 // Updates should (hopefully) always be available at https://github.com/jrowberg/i2cdevlib

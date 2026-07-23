@@ -61,6 +61,19 @@ pip install platformio
 pio --version
 ```
 
+### วิธีที่ 3 — Python Script (แนะนำสำหรับ Linux headless)
+
+```bash
+python3 -c "$(curl -fsSL https://raw.githubusercontent.com/platformio/platformio/master/scripts/get-platformio.py)"
+```
+
+เพิ่ม PlatformIO เข้า PATH:
+
+```bash
+echo "PATH=\"\$PATH:\$HOME/.platformio/penv/bin\"" >> $HOME/.bashrc
+source $HOME/.bashrc
+```
+
 ### ติดตั้ง udev rules (Linux เท่านั้น)
 
 ให้สิทธิ์เชื่อมต่อ USB โดยไม่ต้อง sudo:
@@ -76,7 +89,53 @@ sudo usermod -aG plugdev $USER
 
 ---
 
-## 2. Clone โปรเจกต์
+## 2. ติดตั้ง Micro-ROS Agent (บน PC)
+
+Micro-ROS Agent ทำหน้าที่เป็นตัวกลางระหว่าง ESP32 กับ ROS 2
+
+> ต้องติดตั้ง **ROS 2 Humble** ก่อน ดูได้ที่ https://docs.ros.org/en/humble/Installation.html
+
+### วิธีที่ 1 — ผ่าน binary (ง่ายที่สุด)
+
+```bash
+sudo snap install micro-ros-agent
+```
+
+รัน agent:
+
+```bash
+micro-ros-agent serial --dev /dev/ttyACM0 -b 921600
+```
+
+### วิธีที่ 2 — Build จาก source
+
+```bash
+source /opt/ros/humble/setup.bash
+
+mkdir ~/microros_ws/src -p
+cd ~/microros_ws
+git clone -b humble https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
+
+rosdep update && rosdep install --from-paths src --ignore-src -y
+colcon build && source install/local_setup.bash
+
+ros2 run micro_ros_setup create_agent_ws.sh
+ros2 run micro_ros_setup build_agent.sh
+source install/local_setup.bash
+```
+
+รัน agent:
+
+```bash
+source ~/microros_ws/install/local_setup.bash
+ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 -b 921600
+```
+
+> ดูรายละเอียดเพิ่มเติม: https://micro.ros.org/docs/tutorials/core/first_application_linux/
+
+---
+
+## 3. Clone โปรเจกต์
 
 ```bash
 git clone https://github.com/banh0001/luna_mecanum_robot_hardware.git
@@ -85,7 +144,7 @@ cd luna_mecanum_robot_hardware
 
 ---
 
-## 3. ตั้งค่าหุ่นยนต์ (`config/luna_robot.h`)
+## 4. ตั้งค่าหุ่นยนต์ (`config/luna_robot.h`)
 
 ไฟล์นี้คือหัวใจของ config ทั้งหมด แก้ค่าให้ตรงกับฮาร์ดแวร์ก่อนอัพโหลด
 
@@ -140,7 +199,7 @@ cd luna_mecanum_robot_hardware
 
 ---
 
-## 4. Firmware หลัก (`main/`)
+## 5. Firmware หลัก (`main/`)
 
 Firmware สำหรับใช้งานจริงกับ ROS 2 ผ่าน micro-ROS
 
@@ -220,7 +279,7 @@ ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 -b 921600
 
 ---
 
-## 5. Test Firmware (`test/`)
+## 6. Test Firmware (`test/`)
 
 Test firmware ใช้สำหรับทดสอบฮาร์ดแวร์ก่อนใช้งานจริง **ไม่ต้องใช้ micro-ROS Agent**
 สื่อสารผ่าน Serial Monitor ธรรมดา baud rate **115200**
@@ -432,7 +491,7 @@ Accel_X,Accel_Y,Accel_Z,Gyro_X,Gyro_Y,Gyro_Z
 
 ---
 
-## 6. ลำดับการ Setup หุ่นยนต์ครั้งแรก
+## 7. ลำดับการ Setup หุ่นยนต์ครั้งแรก
 
 ```
 1. ติดตั้ง PlatformIO
@@ -447,7 +506,7 @@ Accel_X,Accel_Y,Accel_Z,Gyro_X,Gyro_Y,Gyro_Z
 
 ---
 
-## 7. แก้ปัญหาที่พบบ่อย
+## 8. แก้ปัญหาที่พบบ่อย
 
 | ปัญหา | สาเหตุ | แนวทางแก้ |
 |---|---|---|

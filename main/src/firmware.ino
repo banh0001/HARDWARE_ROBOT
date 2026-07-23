@@ -1,3 +1,9 @@
+// Copyright (c) 2026 Apiluck Noppkun. All rights reserved.
+// This source code is provided for personal use only.
+// Redistribution, resale, or commercial use without written
+// permission from the author is strictly prohibited.
+// Contact: apiluck.banh@gmail.com
+
 #include <Arduino.h>
 #include <Wire.h>
 #include <micro_ros_platformio.h>
