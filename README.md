@@ -95,40 +95,81 @@ Micro-ROS Agent ทำหน้าที่เป็นตัวกลางร�
 
 > ต้องติดตั้ง **ROS 2 Humble** ก่อน ดูได้ที่ https://docs.ros.org/en/humble/Installation.html
 
-### วิธีที่ 1 — ผ่าน binary (ง่ายที่สุด)
+### ขั้นตอนที่ 1 — Source สภาพแวดล้อมของ ROS 2
 
 ```bash
-sudo snap install micro-ros-agent
+source /opt/ros/$ROS_DISTRO/setup.bash
 ```
 
-รัน agent:
+### ขั้นตอนที่ 2 — สร้าง Workspace และดาวน์โหลดเครื่องมือ micro-ROS
 
 ```bash
-micro-ros-agent serial --dev /dev/ttyACM0 -b 921600
+mkdir microros_ws
+cd microros_ws
+
+git clone -b $ROS_DISTRO \
+  https://github.com/micro-ROS/micro_ros_setup.git \
+  src/micro_ros_setup
 ```
 
-### วิธีที่ 2 — Build จาก source
+### ขั้นตอนที่ 3 — อัปเดต Dependencies ด้วย rosdep
 
 ```bash
-source /opt/ros/humble/setup.bash
+sudo apt update && rosdep update
+rosdep install --from-paths src --ignore-src -y
+```
 
-mkdir ~/microros_ws/src -p
-cd ~/microros_ws
-git clone -b humble https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
+### ขั้นตอนที่ 4 — ติดตั้ง pip สำหรับ Python
 
-rosdep update && rosdep install --from-paths src --ignore-src -y
-colcon build && source install/local_setup.bash
+```bash
+sudo apt-get install python3-pip
+```
 
-ros2 run micro_ros_setup create_agent_ws.sh
-ros2 run micro_ros_setup build_agent.sh
+### ขั้นตอนที่ 5 — Build เครื่องมือ micro-ROS
+
+```bash
+colcon build
+```
+
+### ขั้นตอนที่ 6 — Source Workspace ที่ Build แล้ว
+
+```bash
 source install/local_setup.bash
 ```
 
-รัน agent:
+---
+
+### การสร้าง micro-ROS Agent
+
+#### 1. สร้าง Workspace สำหรับ micro-ROS Agent
 
 ```bash
-source ~/microros_ws/install/local_setup.bash
-ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 -b 921600
+ros2 run micro_ros_setup create_agent_ws.sh
+```
+
+#### 2. Build micro-ROS Agent
+
+```bash
+ros2 run micro_ros_setup build_agent.sh
+```
+
+#### 3. Source Workspace
+
+```bash
+source install/local_setup.bash
+```
+
+#### 4. เพิ่มการ Source อัตโนมัติใน `.bashrc` (ทางเลือก)
+
+```bash
+echo "source ~/microros_ws/install/local_setup.bash" >> ~/.bashrc
+source ~/.bashrc
+```
+
+#### 5. รัน Agent ผ่าน Serial
+
+```bash
+ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyUSB0
 ```
 
 > ดูรายละเอียดเพิ่มเติม: https://micro.ros.org/docs/tutorials/core/first_application_linux/
